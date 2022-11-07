@@ -12,24 +12,24 @@ npm run dev
 
 1.3) Executando no navegador
 
-O servidor esta rodand ona porta `3000`. Dessa forma, basta entrar nela seguindo o padrão da URL, onde:
+O servidor esta rodand ona porta `8080`. Dessa forma, basta entrar nela seguindo o padrão da URL, onde:
 
 localhost:300?username=nomedeusuario&group=canal
 
 Seguindo o exemplo:
 
 ```
-localhost:3000?username=joaopedro&group=distribuida
+localhost:8080?username=joaopedro&group=distribuida
 ```
 
 Abra uma nova:
 ```
-localhost:3000?username=leonardo&group=distribuida
+localhost:8080?username=leonardo&group=distribuida
 ```
 
 Uma terceira aba:
 ```
-localhost:3000?username=odorico&group=geral
+localhost:8080?username=odorico&group=geral
 ```
 
 ### Inicalizando o servidor Redis
@@ -54,7 +54,7 @@ Para execução do projeto são necessárias as seguintes dependências:
 
 ## Inicializando  o servidor do Message Broker
 
-```redis-sever --daemonize yes```
+```redis-server --daemonize yes```
 
 ## Execução do Projeto
 
@@ -76,7 +76,7 @@ Para próxima etapa deve-se iniciar dois servidores distintos para comunicação
 node server.js
 ```
 
-Inicializa um servidor na porta 3000.
+Inicializa um servidor na porta 8080.
 
 ```
 node server.js 5000
@@ -87,7 +87,7 @@ Em sequência já é possível conectar os clientes com os servidores para que p
 
 Cliente 1:
 ```
-localhost:3000?username=joaopedro&group=distribuida
+localhost:8080?username=joaopedro&group=distribuida
 ```
 
 Cliente 2: 

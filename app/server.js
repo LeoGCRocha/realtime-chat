@@ -9,8 +9,8 @@ const {createAdapter} = require('@socket.io/redis-adapter').createAdapter
 // Message Broker 
 const redis = require('redis')
 
-// Use default port as 3000 or use the port provided by the command line
-let PORT = 3000 
+// Use default port as 8080 or use the port provided by the command line
+let PORT = 8080 
 
 if (process.argv[2] !== undefined) {
     PORT = process.argv[2]
