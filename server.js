@@ -46,7 +46,7 @@ io.on('connect', (socket) => {
         });
         
         // Publish sends value
-        pubClient.publish(user.group, usersOnline().toString())
+        pubClient.publish(user.group, usersOnline(user.group).toString())
         
         //   Notify the other users that a new user has joined the chat
         socket.broadcast.to(user.group).emit('message', patternMessage('Admin', `O usuário ${user.username} entrou no chat`))
@@ -54,13 +54,13 @@ io.on('connect', (socket) => {
         // Disconnect the user
         socket.on('disconnect', () => {
             const user = userLeave(socket.id)
-            
+
             // Send new count
-            let currentUsers = usersOnline().toString()
+            let currentUsers = usersOnline(group).toString()
             pubClient.publish(group, currentUsers)
 
-            io.to(user.group).emit('message', 
-                patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
+            io.to(group).emit('message', 
+                patternMessage('Admin', `O usuário ${username} acabou de se desconectar.`))
 
         })
     })

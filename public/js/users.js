@@ -22,8 +22,16 @@ function userLeave(id) {
     }
 }
 
-function usersOnline() {
-    return users_online.length
+function usersOnline(group) {
+
+    let count = 0;
+    users_online.forEach(user => {
+        if (user.group === group) {
+            count++
+        }
+    })
+
+    return count
 }
 
 module.exports = {
