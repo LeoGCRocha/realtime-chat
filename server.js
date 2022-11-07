@@ -4,12 +4,32 @@ const http = require('http')
 const socket = require('socket.io')
 const patternMessage = require('./public/js/message')
 const {userJoin, getUser, userLeave} = require('./public/js/users')
+const {createAdapter} = require('@socket.io/redis-adapter').createAdapter
 
-const PORT = 3000 || process.env.PORT
+// Message Broker 
+const redis = require('redis')
+
+// Use default port as 3000 or use the port provided by the command line
+let PORT = 3000 
+
+if (process.argv[2] !== undefined) {
+    PORT = process.argv[2]
+}
 
 const app = express()
 const server = http.createServer(app)
 const io = socket(server)
+    
+// Redis port is 6379
+// All user are listeners and subscribers
+async function start() {
+    const pubClient = redis.createClient({url: 'redis://localhost:6379'})
+    const subClient = pubClient.duplicate()
+    Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+        io.adapter(createAdapter(pubClient, subClient))
+    })
+}
+start();
 
 io.on('connect', (socket) => {   
 
@@ -34,6 +54,8 @@ io.on('connect', (socket) => {
     // Listen to client messages
     socket.on('chatMessage', (message) => {
         const user = getUser(socket.id)
+
+        // Send message to the group
         io.to(user.group).emit('message', patternMessage(user.username, message))
     })    
 })
