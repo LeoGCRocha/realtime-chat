@@ -3,7 +3,7 @@ const path = require('path')
 const http = require('http')
 const socket = require('socket.io')
 const patternMessage = require('./public/js/message')
-const {userJoin, getUser, userLeave} = require('./public/js/users')
+const {userJoin, getUser, userLeave, usersOnline} = require('./public/js/users')
 const {createAdapter} = require('@socket.io/redis-adapter').createAdapter
 
 // Message Broker 
@@ -22,9 +22,10 @@ const io = socket(server)
     
 // Redis port is 6379
 // All user are listeners and subscribers
+let pubClient, subClient
 async function start() {
-    const pubClient = redis.createClient({url: 'redis://localhost:6379'})
-    const subClient = pubClient.duplicate()
+    pubClient = redis.createClient({url: 'redis://localhost:6379'})
+    subClient = pubClient.duplicate()
     Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
         io.adapter(createAdapter(pubClient, subClient))
     })
@@ -32,7 +33,6 @@ async function start() {
 start();
 
 io.on('connect', (socket) => {   
-
     // Listen some group
     socket.on('joinRoom', ({username, group}) => {
         
@@ -40,7 +40,16 @@ io.on('connect', (socket) => {
         const user = userJoin(socket.id, username, group)
         socket.join(user.group)
 
-         //   Notify the other users that a new user has joined the chat
+
+        // Subscriber listening to value
+        subClient.subscribe(user.group, (message) => {
+            socket.to(user.group).emit('updateCount', message)
+        });
+        
+        // Publish sends value
+        pubClient.publish(user.group, usersOnline().toString())
+        
+        //   Notify the other users that a new user has joined the chat
         socket.broadcast.to(user.group).emit('message', patternMessage('Admin', `O usuário ${user.username} entrou no chat`))
 
         // Disconnect the user
@@ -48,8 +57,10 @@ io.on('connect', (socket) => {
             const user = userLeave(socket.id)
             io.to(user.group).emit('message', 
                 patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
+
         })
     })
+
 
     // Listen to client messages
     socket.on('chatMessage', (message) => {

@@ -1,12 +1,7 @@
 const chatForm = document.getElementById("chat-form")
 const chatMessage = document.getElementById('chat-messages')
+
 const socket = io.connect()
-
-
-// Define username and current group
-// There are two options of groups 
-// 1. Grupo Geral
-// 2. Grupo de Estudos Computação Distribuida
 
 const {
     username,
@@ -15,13 +10,18 @@ const {
     ignoreQueryPrefix: true,  
 })
 
+document.getElementById("group-id").innerHTML = "Grupo: " + group
+
 // Join group
 socket.emit('joinRoom', {username, group})
+
+socket.on('updateCount', (message) => {
+    document.getElementById("count").innerHTML = message
+})
 
 // User connection
 socket.on('message', message => {
     showMessage(message)
-
     // Scroll
     chatMessage.scrollTop = chatMessage.scrollHeight
 })

@@ -57,3 +57,27 @@
     height: 30px;
     width: 60%;
 }
+
+.general-container{
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.general-container img {
+    border-radius: 50%;
+    margin: 10px;
+}
+
+.general-container h1 {
+    font-size: 20pt;
+    margin: 0;
+}
+
+.general-container button { 
+    border: 0px;
+    background-color: red;
+    color: white;
+    font-size: 14pt;
+    padding: 8px;
+    border-radius: 10px;
+}
