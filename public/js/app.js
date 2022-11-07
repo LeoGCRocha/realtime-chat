@@ -10,7 +10,7 @@ const {
     ignoreQueryPrefix: true,  
 })
 
-document.getElementById("group-id").innerHTML = "Grupo: " + group
+document.getElementById("group-id").innerHTML = group
 
 // Join group
 socket.emit('joinRoom', {username, group})

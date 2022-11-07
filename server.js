@@ -40,7 +40,6 @@ io.on('connect', (socket) => {
         const user = userJoin(socket.id, username, group)
         socket.join(user.group)
 
-
         // Subscriber listening to value
         subClient.subscribe(user.group, (message) => {
             socket.to(user.group).emit('updateCount', message)
@@ -55,6 +54,11 @@ io.on('connect', (socket) => {
         // Disconnect the user
         socket.on('disconnect', () => {
             const user = userLeave(socket.id)
+            
+            // Send new count
+            let currentUsers = usersOnline().toString()
+            pubClient.publish(group, currentUsers)
+
             io.to(user.group).emit('message', 
                 patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
 
