@@ -1,0 +1,28 @@
+version : '3'
+
+services:
+    rds:
+        image: redis
+    server1:
+        image: server
+        depends_on:
+          - rds        
+        environment:
+            - SERVERID=1
+            - PORT=8080
+    server2:
+        image: server
+        depends_on:
+          - rds
+        environment:
+            - SERVERID=2
+            - PORT=8080    
+    lb:
+        image: haproxy
+        depends_on:
+            - server1
+            - server2            
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./haproxy:/usr/local/etc/haproxy    

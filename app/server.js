@@ -5,16 +5,19 @@ const socket = require('socket.io')
 const patternMessage = require('./public/js/message')
 const {userJoin, getUser, userLeave} = require('./public/js/users')
 const {createAdapter} = require('@socket.io/redis-adapter').createAdapter
+const SERVERID = process.env.SERVERID;
+const PORT = process.env.PORT;
 
 // Message Broker 
 const redis = require('redis')
 
 // Use default port as 8080 or use the port provided by the command line
-let PORT = 8080 
 
-if (process.argv[2] !== undefined) {
-    PORT = process.argv[2]
-}
+// let PORT = 8080 
+
+// if (process.argv[2] !== undefined) {
+//     PORT = process.argv[2]
+// }
 
 const app = express()
 const server = http.createServer(app)
@@ -23,7 +26,7 @@ const io = socket(server)
 // Redis port is 6379
 // All user are listeners and subscribers
 async function start() {
-    const pubClient = redis.createClient({url: 'redis://localhost:6379'})
+    const pubClient = redis.createClient({url: 'redis://rds:6379'})
     const subClient = pubClient.duplicate()
     Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
         io.adapter(createAdapter(pubClient, subClient))
@@ -31,10 +34,12 @@ async function start() {
 }
 start();
 
-io.on('connect', (socket) => {   
+io.on('connect', (socket) => {
 
     // Listen some group
     socket.on('joinRoom', ({username, group}) => {
+
+        console.log(`Server ${SERVERID} is serving client ${username} in group ${group}`)
         
         // Join user in a group
         const user = userJoin(socket.id, username, group)
