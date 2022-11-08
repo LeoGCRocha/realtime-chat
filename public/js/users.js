@@ -18,25 +18,12 @@ function userLeave(id) {
     const index = users_online.findIndex(user => user.id === id)
     
     if (index !== -1) {
-        return users_online.splice(index, 1)
+        return users_online.splice(index, 1)[0]
     }
-}
-
-function usersOnline(group) {
-
-    let count = 0;
-    users_online.forEach(user => {
-        if (user.group === group) {
-            count++
-        }
-    })
-
-    return count
 }
 
 module.exports = {
     userJoin,
     getUser,
-    userLeave,
-    usersOnline
+    userLeave
 }

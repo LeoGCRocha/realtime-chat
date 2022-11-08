@@ -33,6 +33,7 @@ async function start() {
 start();
 
 io.on('connect', (socket) => {   
+    
     // Listen some group
     socket.on('joinRoom', ({username, group}) => {
         
@@ -40,31 +41,34 @@ io.on('connect', (socket) => {
         const user = userJoin(socket.id, username, group)
         socket.join(user.group)
 
-        // Subscriber listening to value
-        subClient.subscribe(user.group, (message) => {
-            socket.to(user.group).emit('updateCount', message)
-        });
-        
-        // Publish sends value
-        pubClient.publish(user.group, usersOnline(user.group).toString())
-        
         //   Notify the other users that a new user has joined the chat
         socket.broadcast.to(user.group).emit('message', patternMessage('Admin', `O usuário ${user.username} entrou no chat`))
 
-        // Disconnect the user
-        socket.on('disconnect', () => {
-            const user = userLeave(socket.id)
-
-            // Send new count
-            let currentUsers = usersOnline(group).toString()
-            pubClient.publish(group, currentUsers)
-
-            io.to(group).emit('message', 
-                patternMessage('Admin', `O usuário ${username} acabou de se desconectar.`))
-
-        })
+        try {    
+            // When Redis is set as a message broker all emit messages are controlled by Redis
+            let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group).size
+            // Send current online users to all users in the group
+            socket.to(user.group).emit('userCount', currentOnlinseUsers.toString())
+            socket.emit('userCount', currentOnlinseUsers.toString())
+        } catch (error) {
+            socket.to(user.group).emit('userCount', '0')
+            socket.emit('userCount', '0')
+        }
     })
 
+    // Disconnect the user
+    socket.on('disconnect', () => {
+        const user = userLeave(socket.id)
+        try {
+            let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group).size
+            socket.to(user.group).emit('userCount', currentOnlinseUsers.toString())
+        } catch (error) {
+            socket.to(user.group).emit('userCount', '0')
+        }   
+        io.to(user.group).emit('message', 
+            patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
+
+    })
 
     // Listen to client messages
     socket.on('chatMessage', (message) => {

@@ -15,7 +15,9 @@ document.getElementById("group-id").innerHTML = group
 // Join group
 socket.emit('joinRoom', {username, group})
 
-socket.on('updateCount', (message) => {
+socket.on('userCount', (message) => {
+    console.log("hey there")
+
     document.getElementById("count").innerHTML = message
 })
 
