@@ -2,6 +2,7 @@ const users_online = [];
 
 // User current in chat
 function userJoin(id, username, group) {
+
     const user = { id, username, group }
 
     users_online.push(user);
@@ -21,8 +22,21 @@ function userLeave(id) {
     }
 }
 
+function usersOnline(group) {
+
+    let count = 0;
+    users_online.forEach(user => {
+        if (user.group === group) {
+            count++
+        }
+    })
+
+    return count
+}
+
 module.exports = {
     userJoin,
     getUser,
-    userLeave
+    userLeave,
+    usersOnline
 }
