@@ -3,7 +3,7 @@ const path = require('path')
 const http = require('http')
 const socket = require('socket.io')
 const patternMessage = require('./public/js/message')
-const {userJoin, getUser, userLeave, usersOnline} = require('./public/js/users')
+const {userJoin, getUser, userLeave} = require('./public/js/users')
 const {createAdapter} = require('@socket.io/redis-adapter').createAdapter
 
 // Message Broker 
@@ -47,24 +47,26 @@ io.on('connect', (socket) => {
         try {    
             // When Redis is set as a message broker all emit messages are controlled by Redis
             let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group).size
+
+            let users = io.sockets.adapter.rooms.get(user.group)
+            console.log(users)
+
             // Send current online users to all users in the group
             socket.to(user.group).emit('userCount', currentOnlinseUsers.toString())
             socket.emit('userCount', currentOnlinseUsers.toString())
         } catch (error) {
-            socket.to(user.group).emit('userCount', '0')
-            socket.emit('userCount', '0')
+            console.log(error)
         }
     })
 
     // Disconnect the user
     socket.on('disconnect', () => {
-        const user = userLeave(socket.id)
+        const user = userLeave(socket.id)[0]
+        console.log(user)
         try {
             let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group).size
             socket.to(user.group).emit('userCount', currentOnlinseUsers.toString())
-        } catch (error) {
-            socket.to(user.group).emit('userCount', '0')
-        }   
+        } catch (error) {}   
         io.to(user.group).emit('message', 
             patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
 

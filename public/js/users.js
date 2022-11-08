@@ -18,7 +18,7 @@ function userLeave(id) {
     const index = users_online.findIndex(user => user.id === id)
     
     if (index !== -1) {
-        return users_online.splice(index, 1)[0]
+        return users_online.splice(index, 1)
     }
 }
 
