@@ -1,5 +1,6 @@
 const chatForm = document.getElementById("chat-form")
 const chatMessage = document.getElementById('chat-messages')
+const button = document.getElementById('disconnect')
 
 const socket = io.connect()
 
@@ -52,3 +53,7 @@ function showMessage(message) {
     </div>`
     document.getElementById('chat-messages').appendChild(div)
 }
+
+button.addEventListener('click', function () {
+    window.location = "http://localhost:3000/logout";
+});

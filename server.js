@@ -20,6 +20,10 @@ const app = express()
 const server = http.createServer(app)
 const io = socket(server)
     
+app.route('/logout').get((req, res) => {
+    res.sendFile(path.join(__dirname, '/public/logout.html'))
+})
+
 // Redis port is 6379
 // All user are listeners and subscribers
 let pubClient, subClient
@@ -40,6 +44,7 @@ io.on('connect', (socket) => {
         // Join user in a group
         const user = userJoin(socket.id, username, group)
         socket.join(user.group)
+        console.log(io.engine.clientsCount)
 
         //   Notify the other users that a new user has joined the chat
         socket.broadcast.to(user.group).emit('message', patternMessage('Admin', `O usuário ${user.username} entrou no chat`))
@@ -61,15 +66,21 @@ io.on('connect', (socket) => {
 
     // Disconnect the user
     socket.on('disconnect', () => {
-        const user = userLeave(socket.id)[0]
-        console.log(user)
         try {
-            let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group).size
-            socket.to(user.group).emit('userCount', currentOnlinseUsers.toString())
-        } catch (error) {}   
-        io.to(user.group).emit('message', 
-            patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
-
+            user = userLeave(socket.id)
+            if (user !== undefined) {
+                user = user[0]
+                let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group)
+                if (currentOnlinseUsers !== undefined) {
+                    currentOnlinseUsers = currentOnlinseUsers.size
+                    socket.to(user.group).emit('userCount', currentOnlinseUsers.toString())
+                }
+                io.to(user.group).emit('message', 
+                    patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
+            }
+        } catch (error) {
+            console.log(error)
+        }   
     })
 
     // Listen to client messages
