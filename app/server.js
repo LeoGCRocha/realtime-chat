@@ -3,7 +3,7 @@ const path = require('path')
 const http = require('http')
 const socket = require('socket.io')
 const patternMessage = require('./public/js/message')
-const {userJoin, getUser, userLeave, usersOnline} = require('./public/js/users')
+const {userJoin, getUser, userLeave} = require('./public/js/users')
 const {createAdapter} = require('@socket.io/redis-adapter').createAdapter
 const SERVERID = process.env.SERVERID;
 const PORT = process.env.PORT;
@@ -23,6 +23,10 @@ const app = express()
 const server = http.createServer(app)
 const io = socket(server)
     
+app.route('/logout').get((req, res) => {
+    res.sendFile(path.join(__dirname, '/public/logout.html'))
+})
+
 // Redis port is 6379
 // All user are listeners and subscribers
 let pubClient, subClient
@@ -36,6 +40,7 @@ async function start() {
 start();
 
 io.on('connect', (socket) => {   
+    
     // Listen some group
     socket.on('joinRoom', ({username, group}) => {
 
@@ -44,32 +49,44 @@ io.on('connect', (socket) => {
         // Join user in a group
         const user = userJoin(socket.id, username, group)
         socket.join(user.group)
+        console.log(io.engine.clientsCount)
 
-        // Subscriber listening to value
-        subClient.subscribe(user.group, (message) => {
-            socket.to(user.group).emit('updateCount', message)
-        });
-        
-        // Publish sends value
-        pubClient.publish(user.group, usersOnline(user.group).toString())
-        
         //   Notify the other users that a new user has joined the chat
         socket.broadcast.to(user.group).emit('message', patternMessage('Admin', `O usuário ${user.username} entrou no chat`))
 
-        // Disconnect the user
-        socket.on('disconnect', () => {
-            const user = userLeave(socket.id)
+        try {    
+            // When Redis is set as a message broker all emit messages are controlled by Redis
+            let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group).size
 
-            // Send new count
-            let currentUsers = usersOnline(group).toString()
-            pubClient.publish(group, currentUsers)
+            let users = io.sockets.adapter.rooms.get(user.group)
+            console.log(users)
 
-            io.to(group).emit('message', 
-                patternMessage('Admin', `O usuário ${username} acabou de se desconectar.`))
-
-        })
+            // Send current online users to all users in the group
+            socket.to(user.group).emit('userCount', currentOnlinseUsers.toString())
+            socket.emit('userCount', currentOnlinseUsers.toString())
+        } catch (error) {
+            console.log(error)
+        }
     })
 
+    // Disconnect the user
+    socket.on('disconnect', () => {
+        try {
+            user = userLeave(socket.id)
+            if (user !== undefined) {
+                user = user[0]
+                let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group)
+                if (currentOnlinseUsers !== undefined) {
+                    currentOnlinseUsers = currentOnlinseUsers.size
+                    socket.to(user.group).emit('userCount', currentOnlinseUsers.toString())
+                }
+                io.to(user.group).emit('message', 
+                    patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
+            }
+        } catch (error) {
+            console.log(error)
+        }   
+    })
 
     // Listen to client messages
     socket.on('chatMessage', (message) => {

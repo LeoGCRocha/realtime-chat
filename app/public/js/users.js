@@ -22,21 +22,8 @@ function userLeave(id) {
     }
 }
 
-function usersOnline(group) {
-
-    let count = 0;
-    users_online.forEach(user => {
-        if (user.group === group) {
-            count++
-        }
-    })
-
-    return count
-}
-
 module.exports = {
     userJoin,
     getUser,
-    userLeave,
-    usersOnline
+    userLeave
 }
