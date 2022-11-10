@@ -1,30 +1,42 @@
-#chat-container {
-    padding: 10px;
-    width: 800px;
-    margin: 0 auto;
-}
-.general-container {
+.center {
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.chat-groups, #chat-messages {
-    width: 50%;
+#chat-container {
+    /* padding: 10px; */
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    /* margin: 0 auto; */
+}
+
+.chat-and-group {
+    height: 90%;
+    width: 100%;
+    display: flex;    
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.chat-groups {    
+    height: 80%;    
     padding: 10px;
-}
-.chat-groups {
-    border-right: 1px solid #ccc;
-    background-color: #C0C0C0;
-    height: 400px;
+    background-color: rgba(219, 219, 219, 0.872);
 }   
 #chat-messages {
     background-color: #F0F0F0;
-    height: 400px;
+    height: 100%;
+    width: 70%;
+    padding: 10px;
     overflow-y: scroll;
     background-image: url("../res/background-image.jpg");
     background-size: cover;
     background-blend-mode: lighten;
 }
 .information {
-    font-size: 8pt;
+    font-size: 80%;
     font-weight: bolder;
     color: purple;
 }
@@ -37,47 +49,77 @@
 }
 .text {
     padding: 5px;
-    background-color: #98FB98;
+    background-color: #aef2ae;
     border-radius: 5px;
 }
 .time {
-    font-size: 7pt;
+    font-size: 80%;
     float: right;
 }
 #chat-form {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
     padding: 10px;
     width: 100%;
-    background-color: #D3D3D3;
+    height: 10%;
+    background-color: rgba(219, 219, 219, 0.872);
 }
 #chat-form input {
-    border-radius: 5px;
+    border-radius: 20px;
     border: 2px solid grey;
     box-shadow: 0 0 0px grey;
-    outline: none !important;
-    height: 30px;
-    width: 60%;
+    outline: none !important;    
+    height: 70%;
+    width: 80%;
+    padding-left: 10px;
 }
 
-.general-container{
-    text-align: center;
-    font-family: 'Roboto', sans-serif;
+#chat-form button {
+    height: 70%;
+    border-radius: 20px;    
+    font-size: 90%;
 }
 
-.general-container img {
+.chat-groups img {
     border-radius: 50%;
-    margin: 10px;
+    /* margin: 10px; */
+    width: 70%;
+    margin: 10%;
 }
 
-.general-container h1 {
+.chat-groups h1 {
     font-size: 20pt;
     margin: 0;
 }
 
-.general-container button { 
+/* .chat-and-group div button { 
     border: 0px;
     background-color: red;
     color: white;
     font-size: 14pt;
     padding: 8px;
     border-radius: 10px;
+} */
+
+.app-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20%;    
+}
+
+.app-title p {
+    font-size: 155%;
+    color: #1c9909;
+}
+
+.logo {
+    height: 50%;
+    margin-right: 10px;
+}
+
+.left-panel {
+    width: 30%;
+    /* border-right: 1px solid #ccc;     */
 }
