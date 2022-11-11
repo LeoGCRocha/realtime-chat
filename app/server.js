@@ -11,20 +11,20 @@ const PORT = process.env.PORT;
 // Message Broker 
 const redis = require('redis')
 
-// Use default port as 8080 or use the port provided by the command line
-
-// let PORT = 8080 
-
-// if (process.argv[2] !== undefined) {
-//     PORT = process.argv[2]
-// }
-
 const app = express()
 const server = http.createServer(app)
 const io = socket(server)
     
-app.route('/logout').get((req, res) => {
+app.route('/').get((req, res) => {
+    res.sendFile(path.join(__dirname, '/public/slash.html'))
+})
+
+app.route('/logout').get((_, res) => {
     res.sendFile(path.join(__dirname, '/public/logout.html'))
+})
+
+app.route('/chat').get((req, res) => {
+    res.sendFile(path.join(__dirname, '/public/index.html'))
 })
 
 // Redis port is 6379
@@ -57,7 +57,7 @@ io.on('connect', (socket) => {
         try {    
             // When Redis is set as a message broker all emit messages are controlled by Redis
             let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group).size
-
+       
             let users = io.sockets.adapter.rooms.get(user.group)
             console.log(users)
 

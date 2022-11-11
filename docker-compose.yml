@@ -10,6 +10,8 @@ services:
         environment:
             - SERVERID=1
             - PORT=8080
+        volumes:
+            - ./app:/home/node/app/src/
     server2:
         image: server
         depends_on:
@@ -17,6 +19,8 @@ services:
         environment:
             - SERVERID=2
             - PORT=8080    
+        volumes:
+            - ./app:/home/node/app/src/
     lb:
         image: haproxy
         depends_on:
