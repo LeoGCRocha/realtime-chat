@@ -50,5 +50,3 @@ Cliente 2:
 ```
 localhost:5000?username=leonardo&group=distribuida
 ```
-
-# TODO: Apesar das mensagens estarem indo para um canal compartilhado a contagem de usuários não está funcionando corretamente.
