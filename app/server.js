@@ -48,25 +48,14 @@ io.on('connect', (socket) => {
         
         // Join user in a group
         const user = userJoin(socket.id, username, group)
-        socket.join(user.group)
-        console.log(io.engine.clientsCount)
 
         //   Notify the other users that a new user has joined the chat
         socket.broadcast.to(user.group).emit('message', patternMessage('Admin', `O usuário ${user.username} entrou no chat`))
 
-        try {    
-            // When Redis is set as a message broker all emit messages are controlled by Redis
-            let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group).size
-       
-            let users = io.sockets.adapter.rooms.get(user.group)
-            console.log(users)
+    })
 
-            // Send current online users to all users in the group
-            socket.to(user.group).emit('userCount', currentOnlinseUsers.toString())
-            socket.emit('userCount', currentOnlinseUsers.toString())
-        } catch (error) {
-            console.log(error)
-        }
+    socket.on('onlineUsers', (count) => {
+        console.log(count)
     })
 
     // Disconnect the user
