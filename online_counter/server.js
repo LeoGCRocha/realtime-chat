@@ -28,9 +28,7 @@ let currentOnlinseUsers = {
 }
 
 io.on('connection', (socket) => {
-    socket.emit('onlineUsers', currentOnlinseUsers['Geral'])
-    // change this
-    console.log("emit send xxdp")
+    // Try create pub/subscriber solution
 })
 
 // connection 
