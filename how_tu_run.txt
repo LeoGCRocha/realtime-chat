@@ -1,7 +1,0 @@
-Monte a imagem 'server':
-
-sudo docker build -t server .
-
-Suba os containeres:
-
-sudo docker-compose up

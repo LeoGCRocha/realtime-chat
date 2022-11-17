@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/slash.css">
+    <title>WhatsApp Distribuido</title>
+</head>
+<body>
+    <div id="main-content">
+        <div id="user">
+            <input type="text" id="username" placeholder="Digite o nome de usuário">
+        </div>
+        <details class="custom-select">
+            <summary class="radios">
+                <input type="radio" name="item" id="default" title="Selecione o grupo..." checked>
+                <input type="radio" name="item" id="item1" title="Geral">
+                <input type="radio" name="item" id="item2" title="Distribuída">
+                <input type="radio" name="item" id="item3" title="ORG">
+                <input type="radio" name="item" id="item4" title="Calculo">
+                <input type="radio" name="item" id="item5" title="Noticias">
+            </summary>
+            <ul class="list">
+                <li>
+                    <label for="item1">
+                        Geral
+                        <span></span>
+                    </label>
+                </li>
+                <li>
+                    <label for="item2">Distribuida</label>
+                </li>
+                <li>
+                    <label for="item3">ORG</label>
+                </li>
+                <li>
+                    <label for="item4">Calculo</label>
+                </li>
+                <li>
+                    <label for="item5">Noticias</label>
+                </li>
+            </ul>
+        </details>
+        <div id="button">
+            <button id="connect">Conectar</button>
+        </div>
+    </div>
+</body>
+<script src="js/slash.js"></script>
+</html>

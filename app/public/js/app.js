@@ -1,6 +1,6 @@
 const chatForm = document.getElementById("chat-form")
 const chatMessage = document.getElementById('chat-messages')
-const button = document.getElementById('disconnect')
+const button = document.getElementById('btn-logout')
 
 const socket = io.connect()
 
@@ -10,6 +10,20 @@ const {
 } = Qs.parse(location.search, {
     ignoreQueryPrefix: true,  
 })
+
+GROUP_LIST = [
+    'Geral',
+    'Distribuida',
+    'ORG',
+    'Calculo',
+    'Noticias'
+]
+
+if (!GROUP_LIST.includes(group)) {
+
+    // invalid page group
+    window.location.href = '/'
+}
 
 document.getElementById("group-id").innerHTML = group
 
@@ -23,6 +37,7 @@ socket.on('userCount', (message) => {
 // User connection
 socket.on('message', message => {
     showMessage(message)
+
     // Scroll
     chatMessage.scrollTop = chatMessage.scrollHeight
 })
@@ -55,5 +70,5 @@ function showMessage(message) {
 }
 
 button.addEventListener('click', function () {
-    window.location = "http://localhost:3000/logout";
+    document.location.href = "http://localhost:3000/logout";
 });
