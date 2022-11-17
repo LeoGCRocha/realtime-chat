@@ -28,7 +28,7 @@ services:
             - rds
         environment:
             - SERVERID=10
-            - PORT=8080
+            - PORT=5000
         volumes:
             - ./online_counter:/home/node/app/src/
     lb:

@@ -30,14 +30,13 @@ app.route('/chat').get((req, res) => {
 // Redis port is 6379
 // All user are listeners and subscribers
 let pubClient, subClient
-async function start() {
-    const pubClient = redis.createClient({url: 'redis://rds:6379'})
-    const subClient = pubClient.duplicate()
+(async () => {
+    pubClient = redis.createClient({url: 'redis://rds:6379'})
+    subClient = pubClient.duplicate()
     Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
         io.adapter(createAdapter(pubClient, subClient))
     })
-}
-start();
+})()
 
 io.on('connect', (socket) => {   
     
@@ -54,8 +53,8 @@ io.on('connect', (socket) => {
 
     })
 
-    socket.on('onlineUsers', (count) => {
-        console.log(count)
+    subClient.subscribe('online_counter', (message) => {
+        console.log(message)
     })
 
     // Disconnect the user
