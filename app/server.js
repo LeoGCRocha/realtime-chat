@@ -47,6 +47,10 @@ io.on('connect', (socket) => {
 
         pubClient.publish('online_counter', `${username}#${group}`)
         
+        subClient.subscribe(`update_${group}`, (message) => {
+            socket.emit('update', message)
+        })
+
         // Join user in a group
         const user = userJoin(socket.id, username, group)
 
@@ -54,7 +58,7 @@ io.on('connect', (socket) => {
         socket.broadcast.to(user.group).emit('message', patternMessage('Admin', `O usuário ${user.username} entrou no chat`))
 
     })
-
+    
     // Disconnect the user
     socket.on('disconnect', () => {
         try {

@@ -18,12 +18,15 @@ let pubClient, subClient;
     subClient = pubClient.duplicate()
 
     subClient.connect()
+    pubClient.connect()
 
     subClient.subscribe('online_counter', (userJoin) => {
         let arr = userJoin.split('#')
         userController[arr[1]] += 1
         console.log("Usuario logou: " + arr[0])
         console.log(`Usuarios online no grupo ${arr[1]}: ${userController[arr[1]]}`)
+
+        pubClient.publish(`update_${arr[1]}`, `${userController[arr[1]]}`)
     })
 
     subClient.subscribe('offline_counter', (userLeave) => {
@@ -33,5 +36,6 @@ let pubClient, subClient;
         }
         console.log("Usuario saiu: " + arr[0])
         console.log(`Usuarios online no grupo ${arr[1]}: ${userController[arr[1]]}`)
+        pubClient.publish(`update_${arr[1]}`, `${userController[arr[1]]}`)
     })
 })();

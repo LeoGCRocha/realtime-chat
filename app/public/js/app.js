@@ -30,9 +30,10 @@ document.getElementById("group-id").innerHTML = group
 // Join group
 socket.emit('joinRoom', {username, group})
 
-socket.on('onlineUsers', (message) => {
+socket.on('update', (message) => {
     document.getElementById("count").innerHTML = message
 })
+
 
 // User connection
 socket.on('message', message => {
