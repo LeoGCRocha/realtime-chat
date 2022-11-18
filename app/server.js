@@ -44,6 +44,8 @@ io.on('connect', (socket) => {
     socket.on('joinRoom', ({username, group}) => {
 
         console.log(`Server ${SERVERID} is serving client ${username} in group ${group}`)
+
+        pubClient.publish('online_counter', `${username}#${group}`)
         
         // Join user in a group
         const user = userJoin(socket.id, username, group)
@@ -51,10 +53,6 @@ io.on('connect', (socket) => {
         //   Notify the other users that a new user has joined the chat
         socket.broadcast.to(user.group).emit('message', patternMessage('Admin', `O usuário ${user.username} entrou no chat`))
 
-    })
-
-    subClient.subscribe('online_counter', (message) => {
-        console.log(message)
     })
 
     // Disconnect the user
@@ -71,6 +69,8 @@ io.on('connect', (socket) => {
                 io.to(user.group).emit('message', 
                     patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
             }
+
+            pubClient.publish('offline_counter', `${user.username}#${user.group}`)
         } catch (error) {
             console.log(error)
         }   
