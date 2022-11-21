@@ -1,5 +1,3 @@
-const SERVERID = process.env.SERVERID;
-const PORT = process.env.PORT;
 const redis = require('redis');
 
 let userController = {
@@ -13,7 +11,6 @@ let userController = {
 // All user are listeners and subscribers
 let pubClient, subClient;
 (async () => {
-    console.log("Redis Pub/Sub Controller");
     pubClient = redis.createClient({url: 'redis://rds:6379'})
     subClient = pubClient.duplicate()
 
@@ -23,8 +20,8 @@ let pubClient, subClient;
     subClient.subscribe('online_counter', (userJoin) => {
         let arr = userJoin.split('#')
         userController[arr[1]] += 1
-        console.log("Usuario logou: " + arr[0])
-        console.log(`Usuarios online no grupo ${arr[1]}: ${userController[arr[1]]}`)
+        console.log("Online Counter: Usuário logou: " + arr[0])
+        console.log(`Online Counter: Usuários online no grupo ${arr[1]}: ${userController[arr[1]]}`)
 
         pubClient.publish(`update_${arr[1]}`, `${userController[arr[1]]}`)
     })
@@ -34,8 +31,8 @@ let pubClient, subClient;
         if (userController[arr[1]] > 0) {
             userController[arr[1]] -= 1
         }
-        console.log("Usuario saiu: " + arr[0])
-        console.log(`Usuarios online no grupo ${arr[1]}: ${userController[arr[1]]}`)
+        console.log("Online Counter: Usuário saiu: " + arr[0])
+        console.log(`Online Counter: Usuários online no grupo ${arr[1]}: ${userController[arr[1]]}`)
         pubClient.publish(`update_${arr[1]}`, `${userController[arr[1]]}`)
     })
 })();

@@ -43,7 +43,7 @@ io.on('connect', (socket) => {
     // Listen some group
     socket.on('joinRoom', ({username, group}) => {
 
-        console.log(`Server ${SERVERID} is serving client ${username} in group ${group}`)        
+        console.log(`Servidor ${SERVERID}: estou servindo o cliente ${username} no grupo ${group}`)        
 
         pubClient.publish('online_counter', `${username}#${group}`)
         
@@ -94,4 +94,4 @@ io.on('connect', (socket) => {
 // Define static folder to get resources
 app.use(express.static(path.join(__dirname, 'public')))
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+server.listen(PORT, () => console.log(`Servidor ${SERVERID}: estou rodando na porta ${PORT}`))

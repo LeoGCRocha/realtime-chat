@@ -37,10 +37,7 @@ services:
     onlineCounter:
         image: server
         depends_on:
-            - rds
-        environment:
-            - SERVERID=10
-            - PORT=5000
+            - rds        
         volumes:
             - ./online_counter:/home/node/app/src/
     lb:
