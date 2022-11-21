@@ -21,6 +21,15 @@ services:
             - PORT=8080    
         volumes:
             - ./app:/home/node/app/src/
+    server3:
+        image: server
+        depends_on:
+          - rds
+        environment:
+            - SERVERID=3
+            - PORT=8080    
+        volumes:
+            - ./app:/home/node/app/src/
 
     onlineCounter:
         image: server
