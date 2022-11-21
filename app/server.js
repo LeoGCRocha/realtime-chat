@@ -72,9 +72,9 @@ io.on('connect', (socket) => {
                 }
                 io.to(user.group).emit('message', 
                     patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
-                    
-                pubClient.publish('offline_counter', `${user.username}#${user.group}`)
-            }            
+            }
+
+            pubClient.publish('offline_counter', `${user.username}#${user.group}`)
         } catch (error) {
             console.log(error)
         }   
