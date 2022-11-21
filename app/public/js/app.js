@@ -71,5 +71,5 @@ function showMessage(message) {
 }
 
 button.addEventListener('click', function () {
-    document.location.href = "http://localhost:3000/logout";
+    document.location.href = "http://localhost:8080/logout";
 });
