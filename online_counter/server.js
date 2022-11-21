@@ -1,5 +1,3 @@
-const SERVERID = process.env.SERVERID;
-const PORT = process.env.PORT;
 const redis = require('redis');
 
 let userController = {
