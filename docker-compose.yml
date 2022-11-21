@@ -6,7 +6,8 @@ services:
     server1:
         image: server
         depends_on:
-          - rds        
+          - rds
+          - onlineCounter        
         environment:
             - SERVERID=1
             - PORT=8080
@@ -16,6 +17,7 @@ services:
         image: server
         depends_on:
           - rds
+          - onlineCounter
         environment:
             - SERVERID=2
             - PORT=8080    
@@ -25,6 +27,7 @@ services:
         image: server
         depends_on:
           - rds
+          - onlineCounter
         environment:
             - SERVERID=3
             - PORT=8080    
@@ -44,7 +47,8 @@ services:
         image: haproxy
         depends_on:
             - server1
-            - server2            
+            - server2
+            - server3            
         ports:
             - "8080:8080"
         volumes:
