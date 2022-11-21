@@ -30,9 +30,10 @@ document.getElementById("group-id").innerHTML = group
 // Join group
 socket.emit('joinRoom', {username, group})
 
-socket.on('userCount', (message) => {
+socket.on('update', (message) => {
     document.getElementById("count").innerHTML = message
 })
+
 
 // User connection
 socket.on('message', message => {
@@ -46,7 +47,7 @@ socket.on('message', message => {
 chatForm.addEventListener('submit', (action) => {
     action.preventDefault()
     const message = action.target.elements.msg.value
-
+    
     // Send message to the server
     socket.emit('chatMessage', message)
 

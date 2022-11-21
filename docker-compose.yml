@@ -21,6 +21,16 @@ services:
             - PORT=8080    
         volumes:
             - ./app:/home/node/app/src/
+
+    onlineCounter:
+        image: server
+        depends_on:
+            - rds
+        environment:
+            - SERVERID=10
+            - PORT=5000
+        volumes:
+            - ./online_counter:/home/node/app/src/
     lb:
         image: haproxy
         depends_on:

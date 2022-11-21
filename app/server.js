@@ -30,14 +30,13 @@ app.route('/chat').get((req, res) => {
 // Redis port is 6379
 // All user are listeners and subscribers
 let pubClient, subClient
-async function start() {
-    const pubClient = redis.createClient({url: 'redis://rds:6379'})
-    const subClient = pubClient.duplicate()
+(async () => {
+    pubClient = redis.createClient({url: 'redis://rds:6379'})
+    subClient = pubClient.duplicate()
     Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
         io.adapter(createAdapter(pubClient, subClient))
     })
-}
-start();
+})()
 
 io.on('connect', (socket) => {   
     
@@ -45,30 +44,21 @@ io.on('connect', (socket) => {
     socket.on('joinRoom', ({username, group}) => {
 
         console.log(`Server ${SERVERID} is serving client ${username} in group ${group}`)
+
+        pubClient.publish('online_counter', `${username}#${group}`)
         
+        subClient.subscribe(`update_${group}`, (message) => {
+            socket.emit('update', message)
+        })
+
         // Join user in a group
         const user = userJoin(socket.id, username, group)
-        socket.join(user.group)
-        console.log(io.engine.clientsCount)
 
         //   Notify the other users that a new user has joined the chat
         socket.broadcast.to(user.group).emit('message', patternMessage('Admin', `O usuário ${user.username} entrou no chat`))
 
-        try {    
-            // When Redis is set as a message broker all emit messages are controlled by Redis
-            let currentOnlinseUsers = io.sockets.adapter.rooms.get(user.group).size
-       
-            let users = io.sockets.adapter.rooms.get(user.group)
-            console.log(users)
-
-            // Send current online users to all users in the group
-            socket.to(user.group).emit('userCount', currentOnlinseUsers.toString())
-            socket.emit('userCount', currentOnlinseUsers.toString())
-        } catch (error) {
-            console.log(error)
-        }
     })
-
+    
     // Disconnect the user
     socket.on('disconnect', () => {
         try {
@@ -83,6 +73,8 @@ io.on('connect', (socket) => {
                 io.to(user.group).emit('message', 
                     patternMessage('Admin', `O usuário ${user.username} acabou de se desconectar.`))
             }
+
+            pubClient.publish('offline_counter', `${user.username}#${user.group}`)
         } catch (error) {
             console.log(error)
         }   
