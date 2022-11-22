@@ -4,6 +4,7 @@ let userController = {
     'Geral': 0,
     'Distribuida': 0,
     'ORG': 0,
+    'Calculo': 0,
     'Noticias': 0,
 }
 
