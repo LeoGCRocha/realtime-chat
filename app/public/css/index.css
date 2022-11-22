@@ -82,9 +82,12 @@
 }
 
 .chat-groups img {
-    border-radius: 50%;
+    border-radius: 40%;
     /* margin: 10px; */
     width: 70%;
+    /* height: 0;
+    padding-bottom: 50%;
+    position: relative; */    
     margin: 10%;
 }
 

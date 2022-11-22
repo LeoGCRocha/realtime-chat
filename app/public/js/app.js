@@ -19,13 +19,23 @@ GROUP_LIST = [
     'Noticias'
 ]
 
+let groupImages = {
+    'Geral': 'geral.webp',
+    'Distribuida': 'distribuida.webp',
+    'ORG': 'org.jpg',
+    'Calculo': 'calculo.jpg',
+    'Noticias': 'noticias.webp',
+}
+
 if (!GROUP_LIST.includes(group)) {
 
     // invalid page group
     window.location.href = '/'
 }
 
+let groupImage = groupImages[group]
 document.getElementById("group-id").innerHTML = group
+document.getElementById("group-image").setAttribute("src", `res/${groupImage}`)
 
 // Join group
 socket.emit('joinRoom', {username, group})
